@@ -55,15 +55,20 @@ def parseLine(raw_line):
 
 def fileRun(filename):
     ''' Read and parse through the file '''
+
+    new_bst = BST()
+
     with open(filename, "r", encoding= "utf-8") as file:
         for line in file:
             file_read = parseLine(line)
             if file_read is None:
                 continue 
             op_code, student = file_read
-            print(op_code)
-            print(student)
-
+            if op_code == "I":
+                new_bst.insert(student)
+            elif op_code == "D":
+                new_bst.delete(student.key)
+    return new_bst
 
 # Creating the node class
 class Node:
@@ -106,6 +111,7 @@ class BST:
                         current = current.right
 
     def search(self, key):
+        ''' Search for nodes in the tree '''
         current = self.root
         
         while current is not None:
@@ -116,7 +122,80 @@ class BST:
             else:
                 current = current.right
         return None
+    
+    def delete(self, key):
+        ''' Delete a node in the tree '''
+        node = self.search(key)
+
+        if node is None:
+            print(f"Warning {key} not found")
+            return
         
+        # delete a leaf
+        if node.left is None and node.right is None:
+            parent = node.parent
+            if parent is None:
+                self.root = None
+            else:
+                if parent.left is node:
+                    parent.left = None
+                else:
+                    parent.right = None
+
+        # delete a node w/ child 
+        elif node.left is None or node.right is None:
+            if node.left is not None:
+                child = node.left
+            else:
+                child = node.right
+            parent = node.parent
+
+            if parent is None:
+                root = child
+            elif parent.left is node:
+                parent.left = child
+            else:
+                parent.right = parent
+            
+            child.parent = parent
+
+        # delete with two children
+        else:
+            successor = node.right
+            while successor.left is not None:
+                successor = successor.left
+
+            node.data = successor.data
+
+            # Removing the successor 
+            child = successor.right
+            parent = successor.parent
+
+            if parent.left is successor:
+                parent.left = child
+            else:
+                parent.right = child
+            
+            if child is not None:
+                child.parent = parent
+
+
+# Test
+student_tree = fileRun("tree-input.txt")
+print(student_tree.root.data)
+zot = student_tree.search("zot")
+doyle = student_tree.search("doyle")
+
+if zot is None:
+    print("Name was not found")
+else:
+    print(zot.data)
+
+if doyle is None:
+    print("Name was not found")
+else:
+    print(doyle.data)
+print("-----------------------")
 
 # TEST: Create a BST and add student to it 
 tree = BST()
@@ -137,10 +216,52 @@ print(tree.root.left.right.parent.data)
 
 # Testing search for in the tree and not in the tree
 search_1 = tree.search("laporte")
-print(search_1.data)
-
 search_2 = tree.search("zot")
-print(search_2)
+
+if search_2 is None:
+    print("Name was not found")
+else:
+    print(search_2.data)
+
+if search_1 is None:
+    print("Name was not found")
+else:
+    print(search_1.data)
+
+
+# Testing deleting a leaf
+#tree.delete("laporte")
+#print(tree.root.left.right)
+
+tree.delete("zot")
+print(tree.root.right)
+
+
+# Testing deleting a nod with one child
+tree.delete("black")
+print(tree.root.left.data)
+print(tree.root.left.parent.data)
+
+print("--------------")
+
+# testing delete w/two children on a new tree
+another_tree = BST()
+(op_code, mckay) = parseLine("I8534534McKay                    0251CT  1")
+(op_code, laporte) = parseLine("I8400342LaPorte                  0045JA  1")
+(op_code, schafer) = parseLine("I8212399Schafer                  0251EST 1")
+(op_code, morrison) = parseLine("I8322889Morrison                 0045JA  3")
+(op_code, phillips) = parseLine("I8412094Phillips                 0251EST 1")
+
+another_tree.insert(mckay)
+another_tree.insert(laporte)
+another_tree.insert(schafer)
+another_tree.insert(phillips)
+another_tree.insert(morrison)
+
+another_tree.delete("mckay")
+print(another_tree.root.data)
+print(another_tree.root.right.left.data)
+print(another_tree.root.right.left.left)
 
 #student_1 = Student("8534534", "McKay", "0251", "CT", "1")
 #node = Node(student_1)
