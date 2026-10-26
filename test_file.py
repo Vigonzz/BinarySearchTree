@@ -116,4 +116,10 @@ print(another_tree.root.right.left.left)
 #print(student_1)
 #print(student_1.key)
 
+order_tree = fileRun("tree-input.txt")
+traverse_list  = order_tree.inOrderTraversal()
 
+for node in traverse_list:
+    print(node.data)
+
+print(len(traverse_list))
