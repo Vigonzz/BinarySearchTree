@@ -8,6 +8,12 @@
 # left child pointer, and a right child pointer. A parent pointer is optional but might prove 
 # helpful in some operations.
 
+
+# Ramos, L. P. (2026, July 18). Python’s deque: Implement efficient queues and stacks. Real Python.
+# https://realpython.com/python-deque/ 
+from collections import deque
+
+
 class Student:
 
     def __init__(self, student_number, last_name, department, program, year):
@@ -190,11 +196,67 @@ class BST:
         self.inOrderHelper(node.left, traverse) 
         traverse.append(node)
         self.inOrderHelper(node.right, traverse)
+
+    # From the skeleton provided in the assignments note
+    # PreOrder
+    def preOrder(self):
+        traverse = []
+        self.preOrder(self.root, traverse)
+        return traverse
     
+    def preOrderHelper(self, node, traverse):
+        if node is None:
+            return
+        traverse.append(node)
+        self.preOrderHelper(node.left, traverse) 
+        self.preOrderHelper(node.right, traverse)
+
+    #postOrder
+    def postOrder(self):
+        traverse = []
+        self.postOrder(self.root, traverse)
+        return traverse
+    
+    def postOrderHelper(self, node, traverse):
+        if node is None:
+            return
+        self.postOrderHelper(node.left, traverse) 
+        self.postOrderHelper(node.right, traverse)
+        traverse.append(node)
+
+    def levelOrderTraversal(self):
+        result_list = []
+        if self.root is None:
+            return result_list
+        queue = deque([self.root])
+
+        while queue:
+            node = queue.popleft()
+            result_list.append(node)
+
+            if node.left is not None:
+                queue.append(node.left)
+
+            if node.right is not None:
+                queue.append(node.right)
+        return result_list
+
+level_tree = fileRun("tree-input.txt")
+level_list  = level_tree.levelOrderTraversal()
+
+for node in level_list:
+    print(node.data)
+
+print(len(level_list))
+
+                
+
 
 if __name__ == "__main__":
     order_tree = fileRun("tree-input.txt")
     traverse_list  = order_tree.inOrderTraversal()
+    # Need to look at a reference to use w:
+    # GeeksforGeeks. (2026a, April 4). Writing to file in Python. https://www.geeksforgeeks.org/python/writing-to-file-in-python/ 
     with open("inorder-output.txt", "w", encoding="utf-8") as output_file:
         for node in traverse_list:
             output_file.write(str(node.data)+ "\n")
