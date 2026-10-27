@@ -8,6 +8,8 @@
 # left child pointer, and a right child pointer. A parent pointer is optional but might prove 
 # helpful in some operations.
 
+# Structural guidance, some debugging, and step explanations were assisted with Claude Chat.
+# ALL code is my own. https://claude.ai/share/12f36365-f37e-428b-b7bb-b94c2c4dde81
 
 # Ramos, L. P. (2026, July 18). Python’s deque: Implement efficient queues and stacks. Real Python.
 # https://realpython.com/python-deque/ 
@@ -224,6 +226,7 @@ class BST:
         self.postOrderHelper(node.right, traverse)
         traverse.append(node)
 
+    # I am using dequeue from pythons standard library as the queue
     def levelOrderTraversal(self):
         result_list = []
         if self.root is None:
@@ -241,22 +244,27 @@ class BST:
                 queue.append(node.right)
         return result_list
 
-level_tree = fileRun("tree-input.txt")
-level_list  = level_tree.levelOrderTraversal()
-
-for node in level_list:
-    print(node.data)
-
-print(len(level_list))
+# Since I was using this with and for loop multiple times I just decided to go for 
+# a function to clean up the file.. just a bit
+def fileWrite(new_file, file_list):
+    # Need to look at a reference to use w:
+    # GeeksforGeeks. (2026a, April 4). Writing to file in Python. https://www.geeksforgeeks.org/python/writing-to-file-in-python/ 
+    with open(new_file, "w", encoding="utf-8") as output_file:
+        for node in file_list:
+            output_file.write(str(node.data) + "\n")
 
                 
 
 
 if __name__ == "__main__":
+
+    # Build the tree
     order_tree = fileRun("tree-input.txt")
-    traverse_list  = order_tree.inOrderTraversal()
-    # Need to look at a reference to use w:
-    # GeeksforGeeks. (2026a, April 4). Writing to file in Python. https://www.geeksforgeeks.org/python/writing-to-file-in-python/ 
-    with open("inorder-output.txt", "w", encoding="utf-8") as output_file:
-        for node in traverse_list:
-            output_file.write(str(node.data)+ "\n")
+
+    # Get the in-order list and level order list
+    order_list  = order_tree.inOrderTraversal()
+    level_list = order_tree.levelOrderTraversal()
+
+    # Write the file
+    fileWrite("inorder-output.txt", order_list)
+    fileWrite("levelorder-output.txt", level_list)

@@ -116,6 +116,7 @@ print(another_tree.root.right.left.left)
 #print(student_1)
 #print(student_1.key)
 
+# print the len and the whole file
 order_tree = fileRun("tree-input.txt")
 traverse_list  = order_tree.inOrderTraversal()
 
@@ -123,3 +124,13 @@ for node in traverse_list:
     print(node.data)
 
 print(len(traverse_list))
+
+
+# testing the level order method
+level_tree = fileRun("tree-input.txt")
+level_list  = level_tree.levelOrderTraversal()
+
+for node in level_list:
+    print(node.data)
+
+print(len(level_list))
